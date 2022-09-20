@@ -68,21 +68,8 @@ int main(void){
         {2,2,2},
         {2,2,2},
     };
-    int** pt=NULL;
-    pt = Allocate2D_Array(3 , 3);
-    for(int i =0 ; i < 3; i++)
-        for(int j =0 ; j < 3 ; j++)
-        *(*(pt+i)+j)= a[i][j];
 
-    for(int row=0 ; row < 3 ; row++){
-    for(int clumn=0 ; clumn < 3 ; clumn++ ){
-            int temp = *(*(pt+row)+clumn);
-            cout << temp<<" ";
-        }
-        cout << endl;
-    }
-    Free2D_Array(pt, 3,3);
-    
+   
     /*有一個陣列可以放3個地址 (int**)
     就是A變數可以放3個 一維陣列(int*) 啦*/
     int *A[3];
@@ -110,7 +97,33 @@ int main(void){
         }
         cout << endl;
     }
+    //===========================================
+    //      To Use Dynamaic Memory Allocate
+    //===========================================
+    int** pt=NULL;
+    pt = Allocate2D_Array(3 , 3);
+    for(int i =0 ; i < 3; i++)
+        for(int j =0 ; j < 3 ; j++)
+        *(*(pt+i)+j)= a[i][j];
 
+    for(int row=0 ; row < 3 ; row++){
+    for(int clumn=0 ; clumn < 3 ; clumn++ ){
+            int temp = *(*(pt+row)+clumn);
+            cout << temp<<" ";
+        }
+        cout << endl;
+    }
+    Mul(A, B ,pt);
+
+    for(int row=0 ; row < 3 ; row++){
+    for(int clumn=0 ; clumn < 3 ; clumn++ ){
+            int temp = *(*(pt+row)+clumn);
+            cout << temp<<" ";  
+        }
+        cout << endl;
+    }
+    
+    Free2D_Array(pt, 3,3);
     //To delete C 
     for(int i =0 ; i < row ; i++)
         delete C[i];
