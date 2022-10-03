@@ -1,6 +1,5 @@
 /*
  * You are given two Matries and to product it . 
- 
  * 
  * Example 1:
  * Input: A = [1,1,1
@@ -20,6 +19,8 @@
 #include <vector>
 #include <iostream>
 #include <string>
+#include <string.h>
+#include <stdio.h>
 using namespace std;
 void Mul(int** A, int**B , int** C){
     
@@ -45,7 +46,8 @@ int** Allocate2D_Array(int row , int clumn)
 {
     int** Array_2D = new int*[row];
     for(int i = 0 ;i < row ; i++){
-        Array_2D[i] = new int[clumn];
+        //Array_2D[i] = new int[clumn];
+        *(Array_2D + i) = new int[clumn];
     }
     return Array_2D;
 }
@@ -128,5 +130,7 @@ int main(void){
     for(int i =0 ; i < row ; i++)
         delete C[i];
     delete C ; 
-    return 0;
+    
+
+   return 0;
 }
