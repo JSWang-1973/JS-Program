@@ -1,0 +1,33 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#", "$id": "#/controls",
+  "type": "object",
+  "title": "Controls Section Schema",
+  "required": [
+    "reportPeriod",
+    "ranFunctionID",
+    "logLevel"
+  ],
+  "properties": {
+    "reportPeriod" : {
+      "$id": "#/properties/reportPeriod",
+      "enum": [10, 20, 32, 40, 60, 64, 70, 80, 128, 160, 256, 320, 512, 640, 1024, 1280, 2048, 2560, 5120, 10240],
+      "title": "subscription report period",
+      "default": 640,
+      "examples": [10, 20, 640]
+    },
+    "ranFunctionID" : {
+      "$id": "#/properties/ranFunctionID",
+      "type": "integer",
+      "title": "subscription ran function id",
+      "default": 11,
+      "examples": [11, 12]
+    },
+    "logLevel" : {
+      "$id": "#/properties/logLevel",
+      "type": "integer",
+      "title": "log level",
+      "default":3,
+      "examples": [3]
+    }
+  }
+}

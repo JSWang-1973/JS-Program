@@ -1,0 +1,62 @@
+***********************************************************
+    To Copy source code from deploy master
+***********************************************************
+    >>cd /home/k8s/RIC_Dawn_Images
+    >>scp ./ETRI-E2-KPImon-Update-20220728.tar.gz wnc@192.168.2.101:/home/wnc/.
+
+****************************************************************************************
+    To Build E2Term Image  (At RIC Node : 192.168.2.101)
+****************************************************************************************
+    >>sudo su
+    >>cd ~
+    >>mv /home/wnc/ETRI-E2-KPImon-Update-20220728.tar.gz ./.
+    >>tar xzvf ETRI-E2-KPImon-Update-20220728.tar.gz
+    >>rm -f ETRI-E2-KPImon-Update-20220728.tar.gz
+    >>cd /root/ETRI-E2-KPImon-Update-20220728/E2/e2/RIC-E2-TERMINATION
+    >>docker build --network=host -t nexus3.o-ran-sc.org:10002/o-ran-sc/ric-plt-e2:5.4.9 .
+
+
+    Note !!
+        若RIC 和 building 環境不同時 ，我們需要使用 E2Terminal image save/load的方式
+        **Saving Image
+            >>sudo docker save nexus3.o-ran-sc.org:10002/o-ran-sc/ric-plt-e2:5.4.9 > e2_dawn.tar
+
+        **scp e2_dawn.tar Image to RIC 環境
+            For example :
+                >>sudo scp ./e2_dawn.tar wnc@192.168.2.101:/home/wnc/.
+
+        **RIC 環境 loading Image
+            >>sudo docker load -i e2_dawn.tar
+
+****************************************************************************************
+    To Set E2Term Heal Check as disable (At RIC Node : 192.168.2.101)
+****************************************************************************************
+    >>cd /root/dawn_plus_traffic_steering/src/dep/ric-dep/helm/e2term
+    >>vi values.yaml
+
+health:
+    liveness:
+      command: "/opt/e2/rmr_probe -h 0.0.0.0"
+      initialDelaySeconds: 10
+      periodSeconds: 10
+      enabled: true=====================================>To set "false"
+
+    readiness:
+      command: "/opt/e2/rmr_probe -h 0.0.0.0"
+      initialDelaySeconds: 120
+      periodSeconds: 60
+      enabled: true=====================================>To set "false"
+
+****************************************************************************************
+    To re-deploy RIC Platform   (At RIC Node : 192.168.2.101)
+****************************************************************************************
+    >>cd /root/dawn_plus_traffic_steering/src/dep/bin
+    >>undeploy-ric-platform
+    >>/root/dawn_plus_traffic_steering/src/dep
+    >>./bin/deploy-ric-platform  -f ./RECIPE_EXAMPLE/PLATFORM/example_recipe_oran_dawn_release.yaml
+
+***********************************************************
+    To install xapp (At RIC Node : 192.168.2.101)
+***********************************************************
+    >>cd /root/dawn_plus_traffic_steering/src/ric_env
+    >>./install_xapps.sh

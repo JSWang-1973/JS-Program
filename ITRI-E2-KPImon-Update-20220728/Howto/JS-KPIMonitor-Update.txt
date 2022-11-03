@@ -1,0 +1,76 @@
+***********************************************************
+    To Copy source code from deploy master
+***********************************************************
+    >>cd /home/k8s/RIC_Dawn_Images
+    >>scp ./ETRI-E2-KPImon-Update-20220728.tar.gz wnc@192.168.2.101:/home/wnc/.
+
+***********************************************************
+    uninstall xapp (At RIC Node : 192.168.2.101)
+***********************************************************
+    >>sudo su
+    >>sudo -i
+    >>swapoff -a
+    >>exit
+    >>cd /root/dawn_plus_traffic_steering/src/ric_env
+    >>sh ./uninstall_xapps.sh
+
+****************************************************************************************
+    To Update files : schema.json config.json (At RIC Node : 192.168.2.101)
+****************************************************************************************
+    >>cd ~
+    >>mv /home/wnc/ETRI-E2-KPImon-Update-20220728.tar.gz ./.
+    >>tar xzvf ETRI-E2-KPImon-Update-20220728.tar.gz
+    >>rm -f ETRI-E2-KPImon-Update-20220728.tar.gz
+    >>cd /root/ETRI-E2-KPImon-Update-20220728/kpimon
+    >>unzip kpimon_env-20220725.zip
+    >>rm -f kpimon_env-20220725.zip
+    >>cd /root/ETRI-E2-KPImon-Update-20220728/kpimon/kpimon_env/config_server/kpimon
+    >>cp config.json /root/dawn_plus_traffic_steering/src/ric_env/config_server/kpimon/config.json
+    >>cp schema.json /root/dawn_plus_traffic_steering/src/ric_env/config_server/kpimon/schema.json
+
+****************************************************************************************
+    To modify files : onboard.kpimon.url (At RIC Node : 192.168.2.101)
+****************************************************************************************
+    >>cd /root/dawn_plus_traffic_steering/src/ric_env
+    >>vi onboard.kpimon.url
+    **To modify
+        {"config-file.json_url": "http://192.168.2.101:30033/kpimon/config" }
+    **As
+        {"config-file.json_url": " http://192.168.2.101:30033/kpimon/config","controls-schema.json_url":"http://192.168.2.101:30033/kpimon/schema" }
+
+****************************************************************************************
+    To modify files : config_server.py (At RIC Node : 192.168.2.101)
+****************************************************************************************
+    >>cd /root/dawn_plus_traffic_steering/src/ric_env/config_server
+    >>vi config_server.py
+
+    **To modify
+        @app.route('/kpimon/config', methods=['GET'])
+        def kpimon_config():
+          return readData("kpimon/config.json")
+    **As
+        @app.route('/kpimon/config', methods=['GET'])
+        def kpimon_config():
+          return readData("kpimon/config.json")
+
+        @app.route('/kpimon/schema', methods=['GET'])   =====>To add
+        def kpimon_schema():                            =====>To add
+          return readData("kpimon/schema.json")         =====>To add
+
+
+****************************************************************************************
+    To Compiler KPI Monitor Xapp (At RIC Node : 192.168.2.101)
+****************************************************************************************
+    >>cd /root/ETRI-E2-KPImon-Update-20220728/kpimon
+    >>unzip ./scp-ric-app-kpimon-20220725.zip
+    >>rm ./scp-ric-app-kpimon-20220725.zip
+    >>cd /root/ETRI-E2-KPImon-Update-20220728/kpimon/scp-ric-app-kpimon
+    >>docker build --network=host -t nexus3.o-ran-sc.org:10002/o-ran-sc/kpimon:1.1.0 .
+    >>docker save nexus3.o-ran-sc.org:10002/o-ran-sc/kpimon:1.1.0 > kpimon_1.1.0.tar
+    
+    
+***********************************************************
+    To install xapp (At RIC Node : 192.168.2.101)
+***********************************************************
+    >>cd /root/dawn_plus_traffic_steering/src/ric_env
+    >>sh ./install_xapps.sh

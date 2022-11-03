@@ -1,0 +1,4 @@
+newrt|start
+rte|12010|service-ricplt-submgr-rmr.ricplt:4560
+rte|12020|service-ricplt-submgr-rmr.ricplt:4560
+newrt|end
